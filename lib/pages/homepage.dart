@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:news_demo_livestream/bloc/news_bloc.dart';
 import 'package:news_demo_livestream/models/newsInfo.dart';
-import 'package:news_demo_livestream/services/newsService.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -9,7 +9,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final newsService = NewsService();
+  var newsBloc = NewsBloc();
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
     new GlobalKey<RefreshIndicatorState>();
   Future<NewsModel> futureArticles;
@@ -17,7 +17,23 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    futureArticles = newsService.getNews();
+    newsBloc.newsEventSink.add(NewsAction.FETCH);
+  }
+
+  Widget _navDrawer() {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          DrawerHeader(
+            child: Text('Drawer Header'),
+            decoration: BoxDecoration(
+              color: Colors.red,
+            ),
+          )
+        ],
+      )
+    );
   }
 
   Widget _articleTitle(Article article) {
@@ -80,7 +96,7 @@ class _HomePageState extends State<HomePage> {
     await Future.delayed(Duration(seconds: 2));
 
     setState(() {
-      futureArticles = newsService.getNews();
+      newsBloc.newsEventSink.add(NewsAction.FETCH);
     });
   }
 
@@ -89,13 +105,22 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('News App'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search), 
+            onPressed: () {}
+          ),
+          SizedBox(width: 10)
+        ],
       ),
+      drawer: _navDrawer(),
       body: Container(
-        child: FutureBuilder<NewsModel>(
-          future: futureArticles,
+        child: StreamBuilder<NewsModel>(
+          stream: newsBloc.newsStream,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return RefreshIndicator(
+                key: _refreshIndicatorKey,
                 onRefresh: _refresh,
                 child: ListView.builder(
                   itemCount: snapshot.data.articles.length,

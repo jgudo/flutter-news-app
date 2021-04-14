@@ -16,10 +16,11 @@ class NewsService {
         var jsonString = response.body;
         var jsonMap = json.decode(jsonString);
 
-        print(jsonMap);
+        print(jsonMap['articles']);
         newsModel = NewsModel.fromJson(jsonMap);
       }
     } catch (Exception) {
+      
       return newsModel;
     }
 
