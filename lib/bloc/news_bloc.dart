@@ -8,9 +8,9 @@ enum NewsAction {
 }
 
 class NewsBloc {
-  final newsService = NewsService();
+  final _newsService = NewsService();
 
-  StreamController<NewsModel> _newsStreamController = StreamController();
+  StreamController<NewsModel> _newsStreamController = StreamController.broadcast();
   StreamSink<NewsModel> get _newsSink => _newsStreamController.sink;
   Stream<NewsModel> get newsStream => _newsStreamController.stream;
 
@@ -23,7 +23,7 @@ class NewsBloc {
       switch (event) {
         case NewsAction.FETCH: {
           try {
-            var news =  await newsService.getNews();
+            var news =  await _newsService.getNews();
             _newsSink.add(news);
           } catch(err) {
             _newsSink.addError(err);
@@ -31,5 +31,10 @@ class NewsBloc {
         }
       }
     });
+  }
+
+  void dispose() {
+    _newsStreamController.close();
+    _newsEventStreamController.close();
   }
 }
