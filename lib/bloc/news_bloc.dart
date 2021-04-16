@@ -1,16 +1,15 @@
 import 'dart:async';
 
 import 'package:news_demo_livestream/models/newsInfo.dart';
-import 'package:news_demo_livestream/services/newsService.dart';
+import 'package:news_demo_livestream/services/news_service.dart';
 
-enum NewsAction {
-  FETCH
-}
+enum NewsAction { FETCH }
 
 class NewsBloc {
   final _newsService = NewsService();
 
-  StreamController<NewsModel> _newsStreamController = StreamController.broadcast();
+  StreamController<NewsModel> _newsStreamController =
+      StreamController.broadcast();
   StreamSink<NewsModel> get _newsSink => _newsStreamController.sink;
   Stream<NewsModel> get newsStream => _newsStreamController.stream;
 
@@ -21,14 +20,15 @@ class NewsBloc {
   NewsBloc() {
     _newsEventStream.listen((event) async {
       switch (event) {
-        case NewsAction.FETCH: {
-          try {
-            var news =  await _newsService.getNews();
-            _newsSink.add(news);
-          } catch(err) {
-            _newsSink.addError(err);
+        case NewsAction.FETCH:
+          {
+            try {
+              var news = await _newsService.getNews();
+              _newsSink.add(news);
+            } catch (err) {
+              _newsSink.addError(err);
+            }
           }
-        }
       }
     });
   }

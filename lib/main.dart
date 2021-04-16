@@ -12,9 +12,11 @@ class MyApp extends StatelessWidget {
       title: 'News App',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.red,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
+          primarySwatch: Colors.red,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          textTheme: TextTheme(
+            bodyText1: TextStyle(fontSize: 16.0),
+          )),
       home: HomePage(),
     );
   }
