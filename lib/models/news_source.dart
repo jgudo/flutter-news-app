@@ -1,10 +1,18 @@
 import 'dart:convert';
 
-NewsSource welcomeFromJson(String str) => NewsSource.fromJson(json.decode(str));
+NewsSource sourcesFromJson(String str) => NewsSource.fromJson(json.decode(str));
 
-String welcomeToJson(NewsSource data) => json.encode(data.toJson());
+String sourcesToJson(NewsSource data) => json.encode(data.toJson());
 
 class NewsSource {
+  String id;
+  String name;
+  String description;
+  String url;
+  String category;
+  String language;
+  String country;
+
   NewsSource({
     this.id,
     this.name,
@@ -15,23 +23,17 @@ class NewsSource {
     this.country,
   });
 
-  String id;
-  String name;
-  String description;
-  String url;
-  String category;
-  String language;
-  String country;
-
-  factory NewsSource.fromJson(Map<String, dynamic> json) => NewsSource(
-        id: json["id"],
-        name: json["name"],
-        description: json["description"],
-        url: json["url"],
-        category: json["category"],
-        language: json["language"],
-        country: json["country"],
-      );
+  factory NewsSource.fromJson(Map<String, dynamic> json) {
+    return NewsSource(
+      id: json["id"],
+      name: json["name"],
+      description: json["description"],
+      url: json["url"],
+      category: json["category"],
+      language: json["language"],
+      country: json["country"],
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "id": id,

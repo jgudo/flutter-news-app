@@ -31,14 +31,14 @@ class _HomePageState extends State<HomePage>
         length: 2,
         child: Scaffold(
             appBar: AppBar(
-                title: Text('News App'),
+                title: Text(_index == 0 ? AllNews.tabName : 'Top Headlines'),
                 actions: [
                   IconButton(icon: Icon(Icons.search), onPressed: () {}),
                   SizedBox(width: 10)
                 ],
                 bottom: PreferredSize(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      padding: const EdgeInsets.all(10.0),
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[DropDownSources()]),
@@ -47,10 +47,7 @@ class _HomePageState extends State<HomePage>
             drawer: NavDrawer(),
             body: TabBarView(
               controller: _tabController,
-              children: [
-                AllNews(),
-                Text('Tab2'),
-              ],
+              children: [AllNews(), Center(child: DropDownSources())],
             ),
             bottomNavigationBar: BottomNavigationBar(
               currentIndex: _index,
