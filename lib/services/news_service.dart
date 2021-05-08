@@ -8,11 +8,16 @@ import 'package:news_demo_livestream/models/news_source.dart';
 
 // ignore: camel_case_types
 class NewsService {
+  String source;
+
+  NewsService([this.source]);
+
   Future<NewsModel> getNews() async {
     NewsModel newsModel;
 
     try {
-      var response = await http.get(Uri.parse(Strings.newsUrl));
+      var url = Strings.newsUrl + '&domains=$source';
+      var response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         var jsonString = response.body;
         var jsonMap = json.decode(jsonString);

@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:news_demo_livestream/bloc/news_bloc.dart';
 import 'package:news_demo_livestream/models/newsInfo.dart';
 import 'package:news_demo_livestream/pages/article_details.dart';
+import 'package:provider/provider.dart';
 
 class AllNews extends StatefulWidget {
   static String tabName = 'All News';
@@ -12,15 +13,18 @@ class AllNews extends StatefulWidget {
 }
 
 class _AllNewsState extends State<AllNews> {
-  final _newsBloc = NewsBloc();
-  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-      new GlobalKey<RefreshIndicatorState>();
+  NewsBloc _newsBloc;
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = new GlobalKey<RefreshIndicatorState>();
   Future<NewsModel> futureArticles;
 
   @override
   void initState() {
     super.initState();
-    _newsBloc.newsEventSink.add(NewsAction.FETCH);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      NewsBloc bloc = Provider.of<NewsBloc>(context, listen: false);
+      _newsBloc = bloc;
+      _newsBloc.newsEventSink.add(NewsAction.FETCH);
+    });
   }
 
   @override
@@ -72,8 +76,7 @@ class _AllNewsState extends State<AllNews> {
   }
 
   Widget _articleItem(Article article) {
-    var formattedTime =
-        DateFormat('dd MMM - HH:mm').format(article.publishedAt);
+    var formattedTime = DateFormat('dd MMM - HH:mm').format(article.publishedAt);
 
     return InkWell(
         onTap: () {
@@ -110,8 +113,7 @@ class _AllNewsState extends State<AllNews> {
                     SizedBox(height: 5),
                     _articleExcerpt(article),
                     SizedBox(height: 5),
-                    Text(formattedTime,
-                        style: TextStyle(color: Colors.grey[600])),
+                    Text(formattedTime, style: TextStyle(color: Colors.grey[600])),
                   ],
                 ),
               ),
